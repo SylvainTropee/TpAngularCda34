@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {CarbonFootprintForm} from '../carbon-footprint-form/carbon-footprint-form';
 import {CarbonFootprintResult} from '../carbon-footprint-result/carbon-footprint-result';
 import {DecimalPipe, NgClass, NgStyle} from '@angular/common';
+import {CarbonFootprintCompute} from '../../services/carbon-footprint-compute';
 
 @Component({
   selector: 'app-carbon-footprint',
@@ -23,20 +24,14 @@ export class CarbonFootprint {
 
   distance: number
   consumptionPer100Km: number
-  travels: { distance: number, consumptionPer100Km: number }[]
+  quantityCo2: number
+  travels: { distance: number, consumptionPer100Km: number, quantityCo2: number }[]
 
-  constructor() {
-    this.distance = 850
-    this.consumptionPer100Km = 20
-
-    this.travels = [
-      {distance: 50, consumptionPer100Km: 5},
-      {distance: 150, consumptionPer100Km: 6},
-      {distance: 250, consumptionPer100Km: 7},
-      {distance: 350, consumptionPer100Km: 8},
-      {distance: 450, consumptionPer100Km: 9}
-    ]
-
+  constructor(private cfcs: CarbonFootprintCompute) {
+    this.distance = 0
+    this.consumptionPer100Km = 0
+    this.quantityCo2 = 0
+    this.travels = this.cfcs.getTravels()
     this.calculateDistanceAndConsumptionAverage()
   }
 
@@ -47,22 +42,16 @@ export class CarbonFootprint {
   addTravel() {
     const distance = Math.floor(Math.random() * 1000)
     const consumption = Math.floor(Math.random() * 10)
-    this.travels.push({distance: distance, consumptionPer100Km: consumption})
+    const quantityCo2 = this.cfcs.quantityCo2ByTravel(distance, consumption)
+    this.cfcs.addTravel({distance: distance, consumptionPer100Km: consumption, quantityCo2: quantityCo2})
     this.calculateDistanceAndConsumptionAverage()
   }
 
-  private calculateDistanceAndConsumptionAverage(){
+  private calculateDistanceAndConsumptionAverage() {
 
-    let totalDistance = 0
-    let totalConsumption = 0
-
-    for(const travel of this.travels){
-      totalDistance += travel.distance
-      totalConsumption += travel.consumptionPer100Km
-    }
-
-    this.distance = totalDistance
-    this.consumptionPer100Km = totalConsumption / this.travels.length
+    let result = this.cfcs.getResumeTravels()
+    this.distance = result.totalDistance
+    this.consumptionPer100Km = result.consumptionPer100Km
+    this.quantityCo2 = result.totalQuantityCo2
   }
-
 }
