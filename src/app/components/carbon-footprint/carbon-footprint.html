@@ -1,0 +1,55 @@
+<app-carbon-footprint-form></app-carbon-footprint-form>
+<app-carbon-footprint-result></app-carbon-footprint-result>
+
+
+<section>
+  <article>
+    <p>Consommation pour 100km :
+      <span
+        [ngStyle]="{'color' : consumptionPer100Km > MAX_CONSUMPTION ? 'red' : consumptionPer100Km < MIN_CONSUMPTION ? 'green' : 'black' }">{{ consumptionPer100Km | number : "1.2-2" }}</span>
+    </p>
+    @if (consumptionPer100Km > MAX_CONSUMPTION) {
+      <p>Attention votre consommation est élevée !</p>
+    }
+    @if (consumptionPer100Km < MIN_CONSUMPTION) {
+      <p>Félicitations votre consommation est faible !</p>
+    }
+
+    <p>Nombre de km :
+      <span [ngClass]="{'low-distance' : distance <= 100, 'high-distance' : distance >= 500}">{{ distance }}</span>
+    </p>
+
+    <button (click)="add100km()">+ 100 Km</button>
+  </article>
+</section>
+
+<section>
+  <article>
+    <h2>Liste des voyages</h2>
+    <button (click)="addTravel()">Générer voyage</button>
+    <table>
+      <thead>
+      <tr>
+        <th>Distance</th>
+        <th>Consommation pour 100 kms</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (travel of travels; track $index) {
+          <tr>
+            <td>{{ travel.distance }} km</td>
+            <td>{{ travel.consumptionPer100Km }} L</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td>No distance !</td>
+            <td>No consumption !</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </article>
+</section>
+
+
+
