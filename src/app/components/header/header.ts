@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {AfterContentChecked, Component} from '@angular/core';
 import {Nav} from '../nav/nav';
 import {User} from '../../services/user';
 
@@ -11,7 +11,7 @@ import {User} from '../../services/user';
   styleUrl: './header.css',
   standalone: true
 })
-export class Header {
+export class Header{
 
   username : string
 
@@ -21,5 +21,9 @@ export class Header {
 
   isLogged() {
     return this.authService.isLogged()
+  }
+
+  ngOnInit(): void {
+    this.username = this.authService.getUsername()
   }
 }
