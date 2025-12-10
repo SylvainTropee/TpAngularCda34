@@ -1,2 +1,7 @@
-<h1>Bienvenue {{ username }}</h1>
+@if(isLogged()){
+  <h1>Bienvenue {{ username }}</h1>
+  <app-nav [username]="username"></app-nav>
+}
+
+
 
