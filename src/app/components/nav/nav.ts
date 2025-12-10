@@ -1,11 +1,12 @@
 import {Component, Input} from '@angular/core';
-import {Router, RouterLink} from '@angular/router';
+import {Router, RouterLink, RouterLinkActive} from '@angular/router';
 import {User} from '../../services/user';
 
 @Component({
   selector: 'app-nav',
   imports: [
-    RouterLink
+    RouterLink,
+    RouterLinkActive
   ],
   templateUrl: './nav.html',
   styleUrl: './nav.css',
