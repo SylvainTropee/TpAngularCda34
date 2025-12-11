@@ -47,9 +47,10 @@ export class CarbonFootprintForm {
     console.log(this.travelForm.valid)
 
     if (this.travelForm.valid) {
+
       let value = this.travelForm.value
-      if (value.distance && value.consumption) {
-        let quantityCo2 = this.cfpc.quantityCo2ByTravel(value.distance, value.consumption)
+      if (value.distance) {
+        let quantityCo2 = this.cfpc.quantityCo2ByTravel(value.distance, value.consumption, value.travelType)
         this.cfpc.addTravel(
           {distance: value.distance, consumptionPer100Km: value.consumption, quantityCo2: quantityCo2}
         )

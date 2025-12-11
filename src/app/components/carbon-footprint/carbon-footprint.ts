@@ -42,7 +42,7 @@ export class CarbonFootprint {
   addTravel() {
     const distance = Math.floor(Math.random() * 1000)
     const consumption = Math.floor(Math.random() * 10)
-    const quantityCo2 = this.cfcs.quantityCo2ByTravel(distance, consumption)
+    const quantityCo2 = this.cfcs.quantityCo2ByTravel(distance, consumption, "car")
     this.cfcs.addTravel({distance: distance, consumptionPer100Km: consumption, quantityCo2: quantityCo2})
     this.calculateDistanceAndConsumptionAverage()
   }

@@ -5,15 +5,15 @@ import {Injectable} from '@angular/core';
 })
 export class CarbonFootprintCompute {
 
-  private travels: { distance: number, consumptionPer100Km: number , quantityCo2 : number}[]
+  private travels: { distance: number, consumptionPer100Km: number, quantityCo2: number }[]
 
   constructor() {
     this.travels = [
-      {distance: 50, consumptionPer100Km: 5, quantityCo2 : 10},
-      {distance: 150, consumptionPer100Km: 6, quantityCo2 : 45},
-      {distance: 250, consumptionPer100Km: 7, quantityCo2 : 110},
-      {distance: 350, consumptionPer100Km: 8, quantityCo2 : 38},
-      {distance: 450, consumptionPer100Km: 9, quantityCo2 : 1}
+      {distance: 50, consumptionPer100Km: 5, quantityCo2: 10},
+      {distance: 150, consumptionPer100Km: 6, quantityCo2: 45},
+      {distance: 250, consumptionPer100Km: 7, quantityCo2: 110},
+      {distance: 350, consumptionPer100Km: 8, quantityCo2: 38},
+      {distance: 450, consumptionPer100Km: 9, quantityCo2: 1}
     ]
   }
 
@@ -21,15 +21,22 @@ export class CarbonFootprintCompute {
     return this.travels
   }
 
-  public addTravel(travel: { distance: number, consumptionPer100Km: number, quantityCo2 : number }) {
+  public addTravel(travel: { distance: number, consumptionPer100Km: number, quantityCo2: number }) {
     this.travels.push(travel)
   }
 
-  public quantityCo2ByTravel(distance: number, consumptionPer100Km: number){
-    return (distance * consumptionPer100Km) / 100 * 2.3
+  public quantityCo2ByTravel(distance: number, consumptionPer100Km: number, travelType: string) {
+    switch (travelType) {
+      case "train" :
+        return distance * 0.03
+      case "plane" :
+        return distance * 0.2
+      default :
+        return (distance * consumptionPer100Km) / 100 * 2.3;
+    }
   }
 
-  public getResumeTravels(){
+  public getResumeTravels() {
     let totalDistance = 0
     let totalConsumption = 0
     let totalQuantityCo2 = 0
@@ -41,9 +48,9 @@ export class CarbonFootprintCompute {
     }
 
     return {
-      totalDistance : totalDistance,
-      "consumptionPer100Km" : totalConsumption / this.travels.length,
-      totalQuantityCo2 : totalQuantityCo2
+      totalDistance: totalDistance,
+      "consumptionPer100Km": totalConsumption / this.travels.length,
+      totalQuantityCo2: totalQuantityCo2
     }
   }
 
