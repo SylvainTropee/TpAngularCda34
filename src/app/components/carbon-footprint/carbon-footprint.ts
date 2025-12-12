@@ -1,8 +1,9 @@
-import {Component} from '@angular/core';
+import {Component, effect, Signal} from '@angular/core';
 import {CarbonFootprintForm} from '../carbon-footprint-form/carbon-footprint-form';
 import {CarbonFootprintResult} from '../carbon-footprint-result/carbon-footprint-result';
 import {DecimalPipe, NgClass, NgStyle} from '@angular/common';
 import {CarbonFootprintCompute} from '../../services/carbon-footprint-compute';
+import {Travel, TravelType} from '../../models/travel';
 
 @Component({
   selector: 'app-carbon-footprint',
@@ -22,17 +23,24 @@ export class CarbonFootprint {
   readonly MAX_CONSUMPTION: number = 7;
   readonly MIN_CONSUMPTION: number = 4;
 
-  distance: number
-  consumptionPer100Km: number
-  quantityCo2: number
-  travels: { distance: number, consumptionPer100Km: number, quantityCo2: number }[]
+  distance: number = 0
+  consumptionPer100Km: number = 0
+  quantityCo2: number = 0
+
+  travels: Signal<Travel[]>;
 
   constructor(private cfcs: CarbonFootprintCompute) {
-    this.distance = 0
-    this.consumptionPer100Km = 0
-    this.quantityCo2 = 0
-    this.travels = this.cfcs.getTravels()
-    this.calculateDistanceAndConsumptionAverage()
+
+    effect(
+      () => {
+        this.distance = this.cfcs.resumeTravels().totalDistance
+        this.consumptionPer100Km = this.cfcs.resumeTravels().consumptionPer100Km
+        this.quantityCo2 = this.cfcs.resumeTravels().totalQuantityCo2
+      }
+    )
+
+    this.travels = this.cfcs.travels
+    this.cfcs.getTravels()
   }
 
   add100km() {
@@ -42,16 +50,7 @@ export class CarbonFootprint {
   addTravel() {
     const distance = Math.floor(Math.random() * 1000)
     const consumption = Math.floor(Math.random() * 10)
-    const quantityCo2 = this.cfcs.quantityCo2ByTravel(distance, consumption, "car")
-    this.cfcs.addTravel({distance: distance, consumptionPer100Km: consumption, quantityCo2: quantityCo2})
-    this.calculateDistanceAndConsumptionAverage()
+    this.cfcs.addTravel({distance: distance, consumption: consumption, travelType : TravelType.Car}).subscribe()
   }
 
-  private calculateDistanceAndConsumptionAverage() {
-
-    let result = this.cfcs.getResumeTravels()
-    this.distance = result.totalDistance
-    this.consumptionPer100Km = result.consumptionPer100Km
-    this.quantityCo2 = result.totalQuantityCo2
-  }
 }

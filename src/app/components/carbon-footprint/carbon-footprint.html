@@ -34,13 +34,17 @@
       <tr>
         <th>Distance</th>
         <th>Consommation pour 100 kms</th>
+        <th>Transport</th>
+        <th>Co2</th>
       </tr>
       </thead>
       <tbody>
-        @for (travel of travels; track $index) {
+        @for (travel of travels(); track $index) {
           <tr>
             <td>{{ travel.distance }} km</td>
-            <td>{{ travel.consumptionPer100Km }} L</td>
+            <td>{{ travel.consumption }} L</td>
+            <td>{{ travel.travelType }}</td>
+            <td>{{ travel.co2 | number : "1.2-2" }}</td>
           </tr>
         } @empty {
           <tr>
